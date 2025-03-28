@@ -1,5 +1,7 @@
 # AI Text Detector
 
+You can view the demo here - https://ai-text-check.streamlit.app/
+
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.31.1-red)
 ![License](https://img.shields.io/badge/license-MIT-green)
