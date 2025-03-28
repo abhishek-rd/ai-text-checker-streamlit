@@ -9,12 +9,6 @@ st.set_page_config(
 )
 
 
-# # Custom CSS
-# def load_css():
-#     with open("static/style.css") as f:
-#         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-
 def detect_ai_text(text):
     # Replace with your actual API endpoint
     api_url = "https://shakii-textdetectextension.hf.space/predict"
@@ -33,8 +27,9 @@ def detect_ai_text(text):
 
 
 def main():
-    # Load custom CSS
-    # load_css()
+    # Initialize session state for history if it doesn't exist
+    if 'history' not in st.session_state:
+        st.session_state.history = []
 
     st.title("🤖 AI Text Detector")
     st.write("Detect whether text is AI-generated or human-written")
@@ -77,6 +72,28 @@ def main():
                 st.warning(f"📊 Verdict: {prediction}")
             else:
                 st.success(f"📊 Verdict: {prediction}")
+
+            # Store the result in history
+            st.session_state.history.append({
+                'text': text_input[:100] + "..." if len(text_input) > 100 else text_input,
+                'prediction': prediction,
+                'human_prob': result['human_probability'],
+                'ai_prob': result['ai_probability']
+            })
+
+    # Display history section
+    if st.session_state.history:
+        st.markdown("---")
+        st.subheader("Previous Analysis Results")
+        for i, entry in enumerate(st.session_state.history, 1):
+            with st.expander(f"Analysis #{i}"):
+                st.text(f"Text: {entry['text']}")
+                st.text(f"Verdict: {entry['prediction']}")
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.text(f"Human Probability: {entry['human_prob']}%")
+                with col2:
+                    st.text(f"AI Probability: {entry['ai_prob']}%")
 
 
 if __name__ == "__main__":
